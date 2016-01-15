@@ -5,12 +5,42 @@ import math
 
 class UnrolledLinkedList(object):
 
+    """ NODE CLASS """
+
+    class Node(object):
+        def __init__(self):
+            self.array = []
+            self.next_node = None
+
+        def get_next_node(self):
+            return self.next_node
+
+        def set_next_node(self, next_node):
+            self.next_node = next_node
+
+        def get_value_at_index(self, index):
+            return self.array[index]
+
+        def set_value_at_index(self, index, value):
+            self.array[index] = value
+
+        def __len__(self):
+            return len(self.array)
+
+        def __contains__(self, value):
+            if value in self.array:
+                return True
+            else:
+                return False
+
+        def is_array_full(self):
+            return len(self.array) == UnrolledLinkedList.max_node_capacity
+
+
+
     def __init__(self, max_node_capacity=16):
         self.max_node_capacity = max_node_capacity
-        self.head = Node()
-
-
-
+        self.head = self.Node()
 
     """ BASIC """
 
@@ -35,24 +65,23 @@ class UnrolledLinkedList(object):
             nothing
 
         """
-        last_node = find_last_node()
+        last_node = self.find_last_node()
         if last_node.is_array_full():
-        	temp = Node()
-        	#TODO What happens when max_node_capacity is 1 or 2 ???
-        	if self.max_node_capacity == 1:
-        		temp.set_value_at_index(self, 0, data)
-        		#TODO Delete from old array
-    		elif self.max_node_capacity == 2:
-    			temp.set_value_at_index(self, 0, data)
-    			# DO NOT NEED TO DELETE FROM OLD ARRAY
-	        else:
-	        	middle = math.floor(len(last_node)/2)
-	        	temp.array.extend(last_node.array[middle:])
-	        	#TODO Delete from old array
-        	last_node.set_next_node(self, temp)
-    	else:
-    		last_node.array.append(self, data)
-
+            temp = self.Node()
+            # TODO What happens when max_node_capacity is 1 or 2 ???
+            if self.max_node_capacity == 1:
+                temp.set_value_at_index(self, 0, data)
+                # TODO Delete from old array
+            elif self.max_node_capacity == 2:
+                temp.set_value_at_index(self, 0, data)
+                # DO NOT NEED TO DELETE FROM OLD ARRAY
+            else:
+                middle = math.floor(len(last_node)/2)
+                temp.array.extend(last_node.array[middle:])
+                # TODO Delete from old array
+            last_node.set_next_node(self, temp)
+        else:
+            last_node.array.append(self, data)
 
     def __getitem__(self, index):
         """ Access the element at the given index.
@@ -85,9 +114,9 @@ class UnrolledLinkedList(object):
             IndexError: If the index is out of bounds.
 
         """
-        items_node, items_index_in_node_array = get_node_with_data_at_index(head, index)
+        items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
         return items_node.array[items_index_in_node_array]
-		
+        
 
 
         
@@ -120,7 +149,7 @@ class UnrolledLinkedList(object):
             TypeError: If index is not an `int` object.
             IndexError: If the index is out of bounds.
         """
-        items_node, items_index_in_node_array = get_node_with_data_at_index(head, index)
+        items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
         items_node.set_value_at_index(self, items_index_in_node_array, value)
 
     def __delitem__(self, index):
@@ -166,32 +195,32 @@ class UnrolledLinkedList(object):
     """ HELPER """
 
     def find_last_node(self):
-    	if not hasattr(head, 'next_node'): # Make sure this syntax is correct
-    		return head
-		return find_last_node_recur(head)
+        if not hasattr(self.head, 'next_node'): # Make sure this syntax is correct
+            return self.head
+        return self.find_last_node_recur(self.head)
 
-	def find_last_node_recur(curr_node):
-		if not hasattr(curr_node, 'next_node'):
-			return curr_node
-		return find_last_node_recur(curr_node.next_node)
-		pass
+    def find_last_node_recur(self, curr_node):
+        if not hasattr(curr_node, 'next_node'):
+            return curr_node
+        return self.find_last_node_recur(curr_node.next_node)
+        pass
 
-	def get_node_with_data_at_index(curr_node, index):
-		""" This function finds the node with the data at the specified index relative
-			the entire list
-		
-			Ex: Calling get_node_with_data_at_index(head, 3) on this example array 
-			{[1,2,3],[5,4,1]} returns a pointer to the second node and the number 0
-			(the index of the desired item in the array of the node).
-		
-			Throws an IndexError if an item with the given index doesn't exist within
-			the list """
-		has_next_node = hasattr(curr_node, 'next_node')
-		if len(curr_node) > index and has_next_node:
-			return curr_node, index
-		elif has_next_node == True:
-			return get_node_with_data_at_index(curr_node.next_node, index - len(curr_node))
-		raise IndexError('No item in the list has the following index: ' + index)
+    def get_node_with_data_at_index(self, curr_node, index):
+        """ This function finds the node with the data at the specified index relative
+            the entire list
+        
+            Ex: Calling get_node_with_data_at_index(head, 3) on this example array 
+            {[1,2,3],[5,4,1]} returns a pointer to the second node and the number 0
+            (the index of the desired item in the array of the node).
+        
+            Throws an IndexError if an item with the given index doesn't exist within
+            the list """
+        has_next_node = hasattr(curr_node, 'next_node')
+        if len(curr_node) > index and has_next_node:
+            return curr_node, index
+        elif has_next_node:
+            return self.get_node_with_data_at_index(curr_node.next_node, index - len(curr_node))
+        raise IndexError('No item in the list has the following index: ' + index)
 
 
 
@@ -214,66 +243,66 @@ class UnrolledLinkedList(object):
             True: if `item` is found somewhere in the list
             False: if `item` is not found anywhere in the list
         """
-        return contains_recur(self.head, item)
+        return self.contains_recur(self.head, item)
 
-	def contains_recur(curr_node, item):
-		if item in curr_node.array:
-			return True
-		elif hasattr(curr_node, 'next_node'):
-			return contains_recur(curr_node.next_node, item)
-		else: #Has reached end of linked list but hasn't found the element
-			return False
+    def contains_recur(self, curr_node, item):
+        if item in curr_node.array:
+            return True
+        elif hasattr(curr_node, 'next_node'):
+            return self.contains_recur(curr_node.next_node, item)
+        else:  # Has reached end of linked list but hasn't found the element
+            return False
 
-	def __len__(self):
-		"""Return the total number of items in the list
+    def __len__(self):
+        """Return the total number of items in the list
 
-		Usage: `len(my_list)`
+        Usage: `len(my_list)`
 
-		Returns:
-			An int object indicating the *total* number of items in the list,
-			NOT the number of nodes."""
+        Returns:
+            An int object indicating the *total* number of items in the list,
+            NOT the number of nodes."""
 
-        count_num_elements_recur(self.head, 0)
+        self.count_num_elements_recur(self.head, 0)
 
-	def count_num_elements_recur(curr_node, count):
-		curr_node_size = len(curr_node.array)
-		if not hasattr(curr_node, 'next_node'):
-			return count + curr_node_size
-		return count_num_elements_recur(curr_node.next_node, count + curr_node_size)
+    def count_num_elements_recur(self, curr_node, count):
+        curr_node_size = len(curr_node.array)
+        if not hasattr(curr_node, 'next_node'):
+            return count + curr_node_size
+        return self.count_num_elements_recur(curr_node.next_node, count + curr_node_size)
         
 
-	def __str__(self):
-		""" Returns a string representation of the list.
+    def __str__(self):
+        """ Returns a string representation of the list.
 
-		The format for representing an unrolled linked list will be as follows:
-			- curly braces indicates an unrolled linked list
-			- square brackets indicates a node
-			- all values are separated by a comma and a space
-		For example:
-		{[1, 2, 3], [0, 9, 8], [2, 4, 6]}
-		This list has three nodes and each node as three int objects in it.
+        The format for representing an unrolled linked list will be as follows:
+            - curly braces indicates an unrolled linked list
+            - square brackets indicates a node
+            - all values are separated by a comma and a space
+        For example:
+        {[1, 2, 3], [0, 9, 8], [2, 4, 6]}
+        This list has three nodes and each node as three int objects in it.
 
-		Usage: `str(my_list)`
+        Usage: `str(my_list)`
 
-		Returns:
-			A string representation of the list."""
+        Returns:
+            A string representation of the list."""
 
         string = '{'
-        result = string_elements_recur(self.head, string)
+        result = self.string_elements_recur(self.head, string)
         return result + '}'
 
-    def string_elements_recur(curr_node, string):
-		string += '['
-		i = 0
-		while i < len(curr_node.array):
-			string += data
-			if i != len(curr_node.array) - 1:
-				string += ','
-			i += 1
-		string += ']'
-		if hasattr(curr_node, 'next_node'):
-			string += ', '
-			return string_elements_recur(curr_node.next_node, string)
+    def string_elements_recur(self, curr_node, string):
+        string += '['
+        i = 0
+        while i < len(curr_node.array):
+            string += curr_node.array[i]
+            if i != len(curr_node.array) - 1:
+                string += ','
+            i += 1
+        string += ']'
+        if hasattr(curr_node, 'next_node'):
+            string += ', '
+            return self.string_elements_recur(curr_node.next_node, string)
 
 
 
@@ -351,40 +380,5 @@ class UnrolledLinkedList(object):
             An iterator starting from the back of the list
         """
         pass
-
-
-
-
-
-
-    """ NODE CLASS """
-
-    class Node(object):
-        def __init__(self):
-        	self.array = []
-
-        def get_next_node(self):
-        	return self.next_node
-
-        def set_next_node(self, next_node):
-        	self.next_node = next_node
-
-        def get_value_at_index(self, index):
-        	return array[index]
-
-    	def set_value_at_index(self, index, value):
-    		array[index] = value
-
-		def __len__(self):
-			return len(array)
-
-		def __contains__(self, value):
-			if value in self.array:
-				return True
-			else:
-				return False
-
-		def is_array_full(self):
-			return len(self.array) == max_node_capacity
 
 

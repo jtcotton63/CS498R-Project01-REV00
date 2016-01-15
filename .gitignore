@@ -1,1 +1,5 @@
+*.iml
+*.ipr
+*.iws
+META-INF/
 *.pyc
