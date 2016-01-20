@@ -5,6 +5,8 @@ import math
 
 class UnrolledLinkedList(object):
 
+    max_node_capacity = 0
+
     """ NODE CLASS """
 
     class Node(object):
@@ -39,7 +41,7 @@ class UnrolledLinkedList(object):
 
 
     def __init__(self, max_node_capacity=16):
-        self.max_node_capacity = max_node_capacity
+        UnrolledLinkedList.max_node_capacity = max_node_capacity
         self.head = self.Node()
 
     """ BASIC """
@@ -65,23 +67,20 @@ class UnrolledLinkedList(object):
             nothing
 
         """
-        last_node = self.find_last_node()
+        last_node = self.find_last_node_recur(self.head)
         if last_node.is_array_full():
             temp = self.Node()
-            # TODO What happens when max_node_capacity is 1 or 2 ???
-            if self.max_node_capacity == 1:
-                temp.set_value_at_index(self, 0, data)
-                # TODO Delete from old array
-            elif self.max_node_capacity == 2:
+            if UnrolledLinkedList.max_node_capacity == 1 or UnrolledLinkedList.max_node_capacity == 2:
                 temp.set_value_at_index(self, 0, data)
                 # DO NOT NEED TO DELETE FROM OLD ARRAY
             else:
-                middle = math.floor(len(last_node)/2)
+                middle = int(math.floor(len(last_node)/2))+1
                 temp.array.extend(last_node.array[middle:])
-                # TODO Delete from old array
-            last_node.set_next_node(self, temp)
+                temp.array.append(data)
+                last_node.array[middle:] = []
+            last_node.set_next_node(temp)
         else:
-            last_node.array.append(self, data)
+            last_node.array.append(data)
 
     def __getitem__(self, index):
         """ Access the element at the given index.
@@ -194,16 +193,11 @@ class UnrolledLinkedList(object):
 
     """ HELPER """
 
-    def find_last_node(self):
-        if not hasattr(self.head, 'next_node'): # Make sure this syntax is correct
-            return self.head
-        return self.find_last_node_recur(self.head)
-
     def find_last_node_recur(self, curr_node):
-        if not hasattr(curr_node, 'next_node'):
+        if not hasattr(curr_node, 'next_node') or curr_node.next_node == None:
             return curr_node
         return self.find_last_node_recur(curr_node.next_node)
-        pass
+        # pass
 
     def get_node_with_data_at_index(self, curr_node, index):
         """ This function finds the node with the data at the specified index relative
@@ -248,7 +242,7 @@ class UnrolledLinkedList(object):
     def contains_recur(self, curr_node, item):
         if item in curr_node.array:
             return True
-        elif hasattr(curr_node, 'next_node'):
+        elif hasattr(curr_node, 'next_node') and curr_node.next_node != None:
             return self.contains_recur(curr_node.next_node, item)
         else:  # Has reached end of linked list but hasn't found the element
             return False
@@ -288,21 +282,23 @@ class UnrolledLinkedList(object):
             A string representation of the list."""
 
         string = '{'
-        result = self.string_elements_recur(self.head, string)
-        return result + '}'
+        return self.string_elements_recur(self.head, string)
 
     def string_elements_recur(self, curr_node, string):
         string += '['
         i = 0
         while i < len(curr_node.array):
-            string += curr_node.array[i]
+            string += str(curr_node.array[i])
             if i != len(curr_node.array) - 1:
                 string += ','
             i += 1
         string += ']'
-        if hasattr(curr_node, 'next_node'):
+        if not hasattr(curr_node, 'next_node') or curr_node.next_node == None:
+            return string + '}'
+        else:
             string += ', '
             return self.string_elements_recur(curr_node.next_node, string)
+            # return string
 
 
 
@@ -380,5 +376,3 @@ class UnrolledLinkedList(object):
             An iterator starting from the back of the list
         """
         pass
-
-

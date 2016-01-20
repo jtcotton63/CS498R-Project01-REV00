@@ -34,7 +34,8 @@ class Test(unittest.TestCase):
         assert 4 in test_list
         assert 5 in test_list
         assert 6 not in test_list
-        assert str(test_list) == "{[0,1,2], [3,4,5]}"
+        print str(test_list)
+        assert str(test_list) == "{[0,1], [2,3], [4,5]}"
 
 
 
