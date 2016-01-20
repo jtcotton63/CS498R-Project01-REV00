@@ -1,5 +1,8 @@
+.idea/
+.idea/workspace.xml
 *.iml
 *.ipr
 *.iws
 META-INF/
 *.pyc
+*.xml

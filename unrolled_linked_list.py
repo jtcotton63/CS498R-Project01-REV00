@@ -14,18 +14,6 @@ class UnrolledLinkedList(object):
             self.array = []
             self.next_node = None
 
-        def get_next_node(self):
-            return self.next_node
-
-        def set_next_node(self, next_node):
-            self.next_node = next_node
-
-        def get_value_at_index(self, index):
-            return self.array[index]
-
-        def set_value_at_index(self, index, value):
-            self.array[index] = value
-
         def __len__(self):
             return len(self.array)
 
@@ -78,7 +66,7 @@ class UnrolledLinkedList(object):
                 temp.array.extend(last_node.array[middle:])
                 temp.array.append(data)
                 last_node.array[middle:] = []
-            last_node.set_next_node(temp)
+            last_node.next_node = temp
         else:
             last_node.array.append(data)
 
@@ -149,7 +137,7 @@ class UnrolledLinkedList(object):
             IndexError: If the index is out of bounds.
         """
         items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
-        items_node.set_value_at_index(self, items_index_in_node_array, value)
+        items_node.array[items_index_in_node_array] = value
 
     def __delitem__(self, index):
         """ Deletes an item using the built-in `del` keyword
