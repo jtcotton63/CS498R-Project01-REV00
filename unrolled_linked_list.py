@@ -136,6 +136,9 @@ class UnrolledLinkedList(object):
             TypeError: If index is not an `int` object.
             IndexError: If the index is out of bounds.
         """
+        # if type(index) is not int:
+        #     raise TypeError("Index is not an int object")
+
         items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
         items_node.array[items_index_in_node_array] = value
 
@@ -197,12 +200,11 @@ class UnrolledLinkedList(object):
         
             Throws an IndexError if an item with the given index doesn't exist within
             the list """
-        has_next_node = hasattr(curr_node, 'next_node')
-        if len(curr_node) > index and has_next_node:
+        if len(curr_node) > index:
             return curr_node, index
-        elif has_next_node:
+        elif hasattr(curr_node, 'next_node') and curr_node.next_node != None:
             return self.get_node_with_data_at_index(curr_node.next_node, index - len(curr_node))
-        raise IndexError('No item in the list has the following index: ' + index)
+        raise IndexError('No item in the list has the following index: ' + str(index))
 
 
 
@@ -244,14 +246,13 @@ class UnrolledLinkedList(object):
             An int object indicating the *total* number of items in the list,
             NOT the number of nodes."""
 
-        self.count_num_elements_recur(self.head, 0)
+        return self.count_num_elements_recur(self.head, 0)
 
     def count_num_elements_recur(self, curr_node, count):
         curr_node_size = len(curr_node.array)
-        if not hasattr(curr_node, 'next_node'):
+        if not hasattr(curr_node, 'next_node') or curr_node.next_node == None:
             return count + curr_node_size
         return self.count_num_elements_recur(curr_node.next_node, count + curr_node_size)
-        
 
     def __str__(self):
         """ Returns a string representation of the list.
