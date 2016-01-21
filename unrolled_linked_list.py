@@ -30,8 +30,6 @@ class UnrolledLinkedList(object):
         def has_next_node(self):
             return hasattr(self, 'next_node') and self.next_node != None
 
-
-
     def __init__(self, max_node_capacity=16):
         UnrolledLinkedList.max_node_capacity = max_node_capacity
         self.head = self.Node()
@@ -63,7 +61,7 @@ class UnrolledLinkedList(object):
         if last_node.is_array_full():
             temp = self.Node()
             if UnrolledLinkedList.max_node_capacity == 1 or UnrolledLinkedList.max_node_capacity == 2:
-                temp.set_value_at_index(self, 0, data)
+                temp.array[0] = data
                 # DO NOT NEED TO DELETE FROM OLD ARRAY
             else:
                 middle = int(math.floor(len(last_node)/2))
@@ -244,28 +242,6 @@ class UnrolledLinkedList(object):
         else:
             return
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
     # HELPER
 
     def find_last_node_recur(self, curr_node):
@@ -294,13 +270,6 @@ class UnrolledLinkedList(object):
         if calculated_index < 0:
             raise IndexError("Negative index given is out of array bounds")
         return calculated_index
-
-
-
-
-
-
-
 
     """ EXTENDED """
 
@@ -377,10 +346,6 @@ class UnrolledLinkedList(object):
             string += ', '
             return self.string_elements_recur(curr_node.next_node, string)
 
-
-
-
-
     """ OPERATORS """
 
     def __add__(self, other):
@@ -436,10 +401,6 @@ class UnrolledLinkedList(object):
             for j in xrange(0, self_start_length):
                 self.append(self[j])
         return self
-
-
-
-
 
     """ ITERATORS """
 
