@@ -1,8 +1,8 @@
-__author__ = 'Joseph Cotton'
-__email__ = 'jtcotton63@gmail.com'
-
 import unittest
 from unrolled_linked_list import UnrolledLinkedList
+
+__author__ = 'Joseph Cotton'
+__email__ = 'jtcotton63@gmail.com'
 
 '''
 > Implement your tests here
@@ -14,7 +14,7 @@ To run your tests, just run `python tests.py`
 class Test(unittest.TestCase):
     """ Demonstrates how the unittest framework works """
 
-    def test_smoke(self):
+    def test_smoke_single_list(self):
         # Test modifying max_node_capacity parameter
         test_list = UnrolledLinkedList(3)
 
@@ -54,7 +54,7 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             assert test_list[-7]
-        except:
+        except IndexError:
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -79,14 +79,14 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             temp = test_list['a']
-        except TypeError as te:
+        except TypeError:
             error_thrown1 = True
         assert error_thrown1 is True
 
         error_thrown1 = False
         try:
             temp = test_list[5000]
-        except IndexError as ie:
+        except IndexError:
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -94,14 +94,14 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             test_list['a'] == 350
-        except TypeError as te:
+        except TypeError:
             error_thrown1 = True
         assert error_thrown1 is True
 
         error_thrown1 = False
         try:
             test_list[5000] = -1
-        except IndexError as ie:
+        except IndexError:
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -126,7 +126,7 @@ class Test(unittest.TestCase):
         del test_list[2]
         assert str(test_list) == "{[11], [13]}"
 
-        # Test for arrays being deallocated correctly
+        # Test for arrays being de-allocated correctly
         assert len(test_list.head.next_node) == 1
 
         # Test deleting from end using negative indices
@@ -139,14 +139,14 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             del test_list['a']
-        except TypeError as te:
+        except TypeError:
             error_thrown1 = True
         assert error_thrown1 is True
 
         error_thrown1 = False
         try:
             temp = test_list[5000]
-        except IndexError as ie:
+        except IndexError:
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -154,9 +154,69 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             temp = test_list[0]
-        except IndexError as ie:
+        except IndexError:
             error_thrown1 = True
         assert error_thrown1 is True
+
+    # def test_smoke_add_lists(self):
+    #     one = UnrolledLinkedList(5)
+    #     two = UnrolledLinkedList(5)
+    #
+    #     one.append(0)
+    #     one.append(1)
+    #     one.append(2)
+    #     one.append(3)
+    #     one.append(4)
+    #     one.append(5)
+    #
+    #     two.append(10)
+    #     two.append(11)
+    #     two.append(12)
+    #     two.append(13)
+    #     two.append(14)
+    #     two.append(15)
+    #
+    #     one += two
+    #     assert str(one) == "{[0,1], [2,3], [4,5], [10,11], [12,13,14,15]}"
+    #
+    #     # Test error raising for __add__
+    #
+    #     print "Tests are finished"
+    #
+    # def test_smoke_mult(self):
+    #     one = UnrolledLinkedList(5)
+    #     one.append(0)
+    #     one.append(1)
+    #     one.append(2)
+    #     one.append(3)
+    #     one.append(4)
+    #     one.append(5)
+    #
+    #     one *= 1
+    #     assert str(one) == "{[0,1], [2,3,4,5]}"
+    #
+    #     one *= 4
+    #     assert str(one) == "{[0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3,4,5]}"
+
+    def test_smoke_iters(self):
+        test_list = UnrolledLinkedList(16)
+        for i in xrange(0, 16):
+            test_list.append(i)
+
+        # Forwards
+        counter = 0
+        for item in test_list:
+            assert item == counter
+            counter += 1
+
+        # Reverse
+        counter = 15
+        for item in reversed(test_list):
+            assert item == counter
+            counter -= 1
+
+
+
 
 
 

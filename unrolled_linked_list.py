@@ -376,7 +376,6 @@ class UnrolledLinkedList(object):
         else:
             string += ', '
             return self.string_elements_recur(curr_node.next_node, string)
-            # return string
 
 
 
@@ -406,7 +405,11 @@ class UnrolledLinkedList(object):
                 append anything to an unrolled linked list besides another
                 unrolled linked list.
         """
-        pass
+        if type(other) is not UnrolledLinkedList:
+            raise TypeError("Other parameter is not of type UnrolledLinkedList")
+
+        for i in xrange(0, len(other)):
+            self.append(other[i])
 
     def __mul__(self, count):
         """ Repeats (multiplies) the list a given number of times
@@ -424,7 +427,12 @@ class UnrolledLinkedList(object):
             TypeError: If count is not an int
 
         """
-        pass
+        if type(count) is not int:
+            raise TypeError("Count parameter must be an int")
+
+        for i in xrange(0, count - 1):
+            for j in xrange(0, len(self)):
+                self.append(self[j])
 
 
 
@@ -443,7 +451,8 @@ class UnrolledLinkedList(object):
             An iterator that points to each value in the list using the `yield`
                 statement.
         """
-        pass
+        for i in xrange(0, len(self)):
+            yield self[i]
 
     def __reversed__(self):
         """ Works just like __iter__, but starts from the back.
@@ -453,4 +462,5 @@ class UnrolledLinkedList(object):
         Returns:
             An iterator starting from the back of the list
         """
-        pass
+        for i in xrange(0, len(self)):
+            yield self[self.convert_negative_index_to_positive_index(-(i + 1))]
