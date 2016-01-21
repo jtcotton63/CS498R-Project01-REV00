@@ -43,6 +43,21 @@ class Test(unittest.TestCase):
         assert test_list[4] == 4
         assert test_list[5] == 5
 
+        # Test __get__ negative index
+        assert test_list[-1] == 5
+        assert test_list[-2] == 4
+        assert test_list[-3] == 3
+        assert test_list[-4] == 2
+        assert test_list[-5] == 1
+        assert test_list[-6] == 0
+
+        error_thrown1 = False
+        try:
+            assert test_list[-7]
+        except:
+            error_thrown1 = True
+        assert error_thrown1 is True
+
         # Test __str__
         assert str(test_list) == "{[0], [1], [2], [3,4,5]}"
 
@@ -110,6 +125,9 @@ class Test(unittest.TestCase):
         # Make sure the end node gets deleted
         del test_list[2]
         assert str(test_list) == "{[11], [13]}"
+
+        # Test for arrays being deallocated correctly
+        assert len(test_list.head.next_node) == 1
 
 
 

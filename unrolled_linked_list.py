@@ -105,7 +105,12 @@ class UnrolledLinkedList(object):
             IndexError: If the index is out of bounds.
 
         """
-        items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
+        calculated_index = index
+        # Handle negative indices per spec
+        if index < 0:
+            calculated_index = self.convert_negative_index_to_positive_index(index)
+
+        items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, calculated_index)
         return items_node.array[items_index_in_node_array]
         
 
@@ -185,9 +190,10 @@ class UnrolledLinkedList(object):
         # Case where the last item in the last node was removed,
         # so remove the last node
         if (curr_node.has_next_node() == False) and len(curr_node) == 0:
-            del curr_node
-            new_last_node = self.find_last_node_recur(self.head)
+            last_data_index = self.convert_negative_index_to_positive_index(-1)
+            new_last_node, not_important_index = self.get_node_with_data_at_index(self.head, last_data_index)
             new_last_node.next_node = None
+            del curr_node
         else:
             self.adjust_nodes_after_delete(curr_node, UnrolledLinkedList.max_node_capacity)
         return
@@ -275,6 +281,12 @@ class UnrolledLinkedList(object):
         elif curr_node.has_next_node():
             return self.get_node_with_data_at_index(curr_node.next_node, index - len(curr_node))
         raise IndexError('No item in the list has the following index: ' + str(index))
+
+    def convert_negative_index_to_positive_index(self, index):
+        calculated_index = len(self) + index  # same as len() - abs(index)
+        if calculated_index < 0:
+            raise IndexError("Negative index given is out of array bounds")
+        return calculated_index
 
 
 
