@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
         assert str(test_list) == "{[0], [1], [2], [3,4,5]}"
 
         # Test __set__
-        test_list[0] = 10
+        test_list[-6] = 10
         test_list[1] = 11
         test_list[2] = 12
         test_list[3] = 13
@@ -86,7 +86,7 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             temp = test_list[5000]
-        except IndexError as te:
+        except IndexError as ie:
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -101,7 +101,7 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             test_list[5000] = -1
-        except IndexError as te:
+        except IndexError as ie:
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -128,6 +128,36 @@ class Test(unittest.TestCase):
 
         # Test for arrays being deallocated correctly
         assert len(test_list.head.next_node) == 1
+
+        # Test deleting from end using negative indices
+        del test_list[-2]
+        assert str(test_list) == "{[13]}"
+        del test_list[-1]
+        assert str(test_list) == "{[]}"
+
+        # Test error raising for __del__
+        error_thrown1 = False
+        try:
+            del test_list['a']
+        except TypeError as te:
+            error_thrown1 = True
+        assert error_thrown1 is True
+
+        error_thrown1 = False
+        try:
+            temp = test_list[5000]
+        except IndexError as ie:
+            error_thrown1 = True
+        assert error_thrown1 is True
+
+        # Test getting when the list is empty
+        error_thrown1 = False
+        try:
+            temp = test_list[0]
+        except IndexError as ie:
+            error_thrown1 = True
+        assert error_thrown1 is True
+
 
 
 

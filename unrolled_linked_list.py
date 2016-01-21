@@ -106,16 +106,11 @@ class UnrolledLinkedList(object):
 
         """
         calculated_index = index
-        # Handle negative indices per spec
         if index < 0:
             calculated_index = self.convert_negative_index_to_positive_index(index)
 
         items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, calculated_index)
         return items_node.array[items_index_in_node_array]
-        
-
-
-        
 
     def __setitem__(self, index, value):
         """ Sets the item at the given index to a new value
@@ -145,10 +140,11 @@ class UnrolledLinkedList(object):
             TypeError: If index is not an `int` object.
             IndexError: If the index is out of bounds.
         """
-        # if type(index) is not int:
-        #     raise TypeError("Index is not an int object")
+        calculated_index = index
+        if index < 0:
+            calculated_index = self.convert_negative_index_to_positive_index(index)
 
-        items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
+        items_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, calculated_index)
         items_node.array[items_index_in_node_array] = value
 
     def __delitem__(self, index):
@@ -183,13 +179,24 @@ class UnrolledLinkedList(object):
             TypeError: If index is not an `int` object.
             IndexError: If the index is out of bounds.
         """
+        if not type(index) is int:
+            raise TypeError("Indices can only be of type int")
+
         # Find node the item is in and delete it from the node's array
-        curr_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
+        calculated_index = index
+        if index < 0:
+            calculated_index = self.convert_negative_index_to_positive_index(index)
+
+        curr_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, calculated_index)
         del curr_node.array[items_index_in_node_array]
 
+        # Case where the last item in the list was removed,
+        # so do nothing
+        if len(self) == 0:
+            pass
         # Case where the last item in the last node was removed,
         # so remove the last node
-        if (curr_node.has_next_node() == False) and len(curr_node) == 0:
+        elif (curr_node.has_next_node() == False) and len(curr_node) == 0 and len(self) > 0:
             last_data_index = self.convert_negative_index_to_positive_index(-1)
             new_last_node, not_important_index = self.get_node_with_data_at_index(self.head, last_data_index)
             new_last_node.next_node = None
@@ -200,7 +207,7 @@ class UnrolledLinkedList(object):
 
     # Adjusts the nodes after an item has been removed from one of the arrays of a node.
     #
-    # If the node where the item was removed from (curr_node) is more than half way full already,
+    # If the node where the item was removed from (curr_node) is more than half-way full already,
     # we do nothing.
     # If the curr_node is less than half-way full but has no next_node, we simply return
     # leaving curr_node as it is
@@ -262,7 +269,7 @@ class UnrolledLinkedList(object):
     # HELPER
 
     def find_last_node_recur(self, curr_node):
-        if not hasattr(curr_node, 'next_node') or curr_node.next_node == None:
+        if not curr_node.has_next_node():
             return curr_node
         return self.find_last_node_recur(curr_node.next_node)
 
@@ -314,7 +321,7 @@ class UnrolledLinkedList(object):
     def contains_recur(self, curr_node, item):
         if item in curr_node.array:
             return True
-        elif hasattr(curr_node, 'next_node') and curr_node.next_node != None:
+        elif curr_node.has_next_node():
             return self.contains_recur(curr_node.next_node, item)
         else:  # Has reached end of linked list but hasn't found the element
             return False
@@ -332,7 +339,7 @@ class UnrolledLinkedList(object):
 
     def count_num_elements_recur(self, curr_node, count):
         curr_node_size = len(curr_node.array)
-        if not hasattr(curr_node, 'next_node') or curr_node.next_node == None:
+        if not curr_node.has_next_node():
             return count + curr_node_size
         return self.count_num_elements_recur(curr_node.next_node, count + curr_node_size)
 
@@ -364,7 +371,7 @@ class UnrolledLinkedList(object):
                 string += ','
             i += 1
         string += ']'
-        if not hasattr(curr_node, 'next_node') or curr_node.next_node == None:
+        if not curr_node.has_next_node():
             return string + '}'
         else:
             string += ', '
