@@ -410,6 +410,7 @@ class UnrolledLinkedList(object):
 
         for i in xrange(0, len(other)):
             self.append(other[i])
+        return self
 
     def __mul__(self, count):
         """ Repeats (multiplies) the list a given number of times
@@ -430,9 +431,11 @@ class UnrolledLinkedList(object):
         if type(count) is not int:
             raise TypeError("Count parameter must be an int")
 
+        self_start_length = len(self)
         for i in xrange(0, count - 1):
-            for j in xrange(0, len(self)):
+            for j in xrange(0, self_start_length):
                 self.append(self[j])
+        return self
 
 
 

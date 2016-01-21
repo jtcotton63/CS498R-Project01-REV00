@@ -158,45 +158,58 @@ class Test(unittest.TestCase):
             error_thrown1 = True
         assert error_thrown1 is True
 
-    # def test_smoke_add_lists(self):
-    #     one = UnrolledLinkedList(5)
-    #     two = UnrolledLinkedList(5)
-    #
-    #     one.append(0)
-    #     one.append(1)
-    #     one.append(2)
-    #     one.append(3)
-    #     one.append(4)
-    #     one.append(5)
-    #
-    #     two.append(10)
-    #     two.append(11)
-    #     two.append(12)
-    #     two.append(13)
-    #     two.append(14)
-    #     two.append(15)
-    #
-    #     one += two
-    #     assert str(one) == "{[0,1], [2,3], [4,5], [10,11], [12,13,14,15]}"
-    #
-    #     # Test error raising for __add__
-    #
-    #     print "Tests are finished"
-    #
-    # def test_smoke_mult(self):
-    #     one = UnrolledLinkedList(5)
-    #     one.append(0)
-    #     one.append(1)
-    #     one.append(2)
-    #     one.append(3)
-    #     one.append(4)
-    #     one.append(5)
-    #
-    #     one *= 1
-    #     assert str(one) == "{[0,1], [2,3,4,5]}"
-    #
-    #     one *= 4
-    #     assert str(one) == "{[0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3,4,5]}"
+    def test_smoke_add_lists(self):
+        one = UnrolledLinkedList(5)
+        two = UnrolledLinkedList(5)
+
+        one.append(0)
+        one.append(1)
+        one.append(2)
+        one.append(3)
+        one.append(4)
+        one.append(5)
+
+        two.append(10)
+        two.append(11)
+        two.append(12)
+        two.append(13)
+        two.append(14)
+        two.append(15)
+
+        one += two
+        assert str(one) == "{[0,1], [2,3], [4,5], [10,11], [12,13,14,15]}"
+
+        # Test error raising for __add__
+        error_thrown = False
+        try:
+            one += 'hello'
+        except TypeError:
+            error_thrown = True
+        assert error_thrown is True
+
+    def test_smoke_mult(self):
+        one = UnrolledLinkedList(5)
+        one.append(0)
+        one.append(1)
+        one.append(2)
+        one.append(3)
+        one.append(4)
+        one.append(5)
+
+        one *= 1
+        assert str(one) == "{[0,1], [2,3,4,5]}"
+
+        one *= 4
+        assert str(one) == "{[0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3,4,5]}"
+
+        # Test error raising for __mult__
+        error_thrown = False
+        try:
+            two = UnrolledLinkedList
+            one *= two
+        except TypeError:
+            error_thrown = True
+        assert error_thrown is True
 
     def test_smoke_iters(self):
         test_list = UnrolledLinkedList(16)
@@ -214,24 +227,6 @@ class Test(unittest.TestCase):
         for item in reversed(test_list):
             assert item == counter
             counter -= 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     unittest.main()
