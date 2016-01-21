@@ -1,7 +1,8 @@
+import math
+
 __author__ = 'Joseph Cotton'
 __email__ = 'jtcotton63@gmail.com'
 
-import math
 
 class UnrolledLinkedList(object):
 
@@ -25,6 +26,9 @@ class UnrolledLinkedList(object):
 
         def is_array_full(self):
             return len(self.array) == UnrolledLinkedList.max_node_capacity
+
+        def has_next_node(self):
+            return hasattr(self, 'next_node') and self.next_node != None
 
 
 
@@ -62,7 +66,7 @@ class UnrolledLinkedList(object):
                 temp.set_value_at_index(self, 0, data)
                 # DO NOT NEED TO DELETE FROM OLD ARRAY
             else:
-                middle = int(math.floor(len(last_node)/2))+1
+                middle = int(math.floor(len(last_node)/2))
                 temp.array.extend(last_node.array[middle:])
                 temp.array.append(data)
                 last_node.array[middle:] = []
@@ -174,6 +178,73 @@ class UnrolledLinkedList(object):
             TypeError: If index is not an `int` object.
             IndexError: If the index is out of bounds.
         """
+        # Find node the item is in and delete it from the node's array
+        curr_node, items_index_in_node_array = self.get_node_with_data_at_index(self.head, index)
+        del curr_node.array[items_index_in_node_array]
+
+        # Case where the last item in the last node was removed,
+        # so remove the last node
+        if (curr_node.has_next_node() == False) and len(curr_node) == 0:
+            del curr_node
+            new_last_node = self.find_last_node_recur(self.head)
+            new_last_node.next_node = None
+        else:
+            self.adjust_nodes_after_delete(curr_node, UnrolledLinkedList.max_node_capacity)
+        return
+
+    # Adjusts the nodes after an item has been removed from one of the arrays of a node.
+    #
+    # If the node where the item was removed from (curr_node) is more than half way full already,
+    # we do nothing.
+    # If the curr_node is less than half-way full but has no next_node, we simply return
+    # leaving curr_node as it is
+    # If the curr_node is less than half-way full and has a next_node, we move elements
+    # from the next_node to bring it up above half. If this brings the next_node below half-full,
+    # we move all the remaining elements in next_node to curr_node and delete next_node from the chain.
+    #
+    # mnc = max_node_capacity
+    def adjust_nodes_after_delete(self, curr_node, mnc):
+        # Case where the curr_node already above half
+        if len(curr_node) > mnc:
+            return
+
+        # Case where the curr_node is less than half-way full and has a next_node;
+        # move items from the next_node to the curr_node until it is above half
+        elif curr_node.has_next_node():
+            # Moving items from the next_node into the curr_node.
+            while (not (len(curr_node) > mnc)) and len(curr_node.next_node) > 0:
+                curr_node.array.append(curr_node.next_node.array[-1])
+                del curr_node.next_node.array[-1]
+            # Checking if the next_node is below half. Please note that the arithmetic operation
+            # below is an equivalent to checking if next_node if below half (the answer will be negative
+            # if len(next_node) is above half).
+            if len(curr_node) - len(curr_node.next_node) >= 0:
+                tbd = curr_node.next_node
+                if tbd.has_next_node():
+                    curr_node.next_node = tbd.next_node
+                # If next_node is the end of the node chain, it will have no node
+                else:
+                    curr_node.next_node = None
+                del tbd
+
+        # Case where the curr_node is less than half-way full but has no next_node
+        else:
+            return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
 
 
@@ -182,27 +253,26 @@ class UnrolledLinkedList(object):
 
 
 
-    """ HELPER """
+    # HELPER
 
     def find_last_node_recur(self, curr_node):
         if not hasattr(curr_node, 'next_node') or curr_node.next_node == None:
             return curr_node
         return self.find_last_node_recur(curr_node.next_node)
-        # pass
 
+    # This function finds the node with the data at the specified index relative
+    # the entire list
+    #
+    # Ex: Calling get_node_with_data_at_index(head, 3) on this example array
+    # {[1,2,3],[5,4,1]} returns a pointer to the second node and the number 0
+    # (the index of the desired item in the array of the node).
+    #
+    # Throws an IndexError if an item with the given index doesn't exist within
+    # the list.
     def get_node_with_data_at_index(self, curr_node, index):
-        """ This function finds the node with the data at the specified index relative
-            the entire list
-        
-            Ex: Calling get_node_with_data_at_index(head, 3) on this example array 
-            {[1,2,3],[5,4,1]} returns a pointer to the second node and the number 0
-            (the index of the desired item in the array of the node).
-        
-            Throws an IndexError if an item with the given index doesn't exist within
-            the list """
         if len(curr_node) > index:
             return curr_node, index
-        elif hasattr(curr_node, 'next_node') and curr_node.next_node != None:
+        elif curr_node.has_next_node():
             return self.get_node_with_data_at_index(curr_node.next_node, index - len(curr_node))
         raise IndexError('No item in the list has the following index: ' + str(index))
 

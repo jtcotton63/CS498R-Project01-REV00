@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
         assert test_list[5] == 5
 
         # Test __str__
-        assert str(test_list) == "{[0,1], [2,3], [4,5]}"
+        assert str(test_list) == "{[0], [1], [2], [3,4,5]}"
 
         # Test __set__
         test_list[0] = 10
@@ -92,6 +92,26 @@ class Test(unittest.TestCase):
 
         # Test __len__
         assert len(test_list) is 6
+
+        # Test delete
+        del test_list[0]
+        assert str(test_list) == "{[11], [12], [13,14,15]}"
+        test_list.append(16)
+        del test_list[1]
+        # Make sure a middle node gets removed correctly
+        assert str(test_list) == "{[11], [13], [14,15,16]}"
+        del test_list[2]
+        assert str(test_list) == "{[11], [13], [15,16]}"
+        test_list.append(17)
+        del test_list[4]
+        assert str(test_list) == "{[11], [13], [15,16]}"
+        del test_list[3]
+        assert str(test_list) == "{[11], [13], [15]}"
+        # Make sure the end node gets deleted
+        del test_list[2]
+        assert str(test_list) == "{[11], [13]}"
+
+
 
 
 
