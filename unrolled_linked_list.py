@@ -64,7 +64,9 @@ class UnrolledLinkedList(object):
                 temp.array[0] = data
                 # DO NOT NEED TO DELETE FROM OLD ARRAY
             else:
-                middle = int(math.floor(len(last_node)/2))
+                middle = int(math.floor(len(last_node)/2))  # When even
+                if UnrolledLinkedList.max_node_capacity % 2 == 1:  # When odd
+                    middle += 1
                 temp.array.extend(last_node.array[middle:])
                 temp.array.append(data)
                 last_node.array[middle:] = []
@@ -215,23 +217,25 @@ class UnrolledLinkedList(object):
     #
     # mnc = max_node_capacity
     def adjust_nodes_after_delete(self, curr_node, mnc):
-        # Case where the curr_node already above half
-        if len(curr_node) > mnc:
-            return
 
         # Case where the curr_node is less than half-way full and has a next_node;
         # move items from the next_node to the curr_node until it is above half
-        elif curr_node.has_next_node():
+        if curr_node.has_next_node():
+
             # Moving items from the next_node into the curr_node.
-            while (not (len(curr_node) > mnc)) and len(curr_node.next_node) > 0:
-                curr_node.array.append(curr_node.next_node.array[-1])
-                del curr_node.next_node.array[-1]
+            while len(curr_node) < mnc/2 and len(curr_node.next_node) > 0:
+                curr_node.array.append(curr_node.next_node.array[0])
+                del curr_node.next_node.array[0]
+
             # Checking if the next_node is below half. Please note that the arithmetic operation
             # below is an equivalent to checking if next_node if below half (the answer will be negative
             # if len(next_node) is above half).
-            if len(curr_node) - len(curr_node.next_node) >= 0:
-                tbd = curr_node.next_node
+            if len(curr_node) + len(curr_node.next_node) <= mnc:
+                tbd = curr_node.next_node  # toBeDeleted
                 if tbd.has_next_node():
+                    while len(tbd) > 0:
+                        curr_node.array.append(tbd.array[0])
+                        del tbd.array[0]
                     curr_node.next_node = tbd.next_node
                 # If next_node is the end of the node chain, it will have no node
                 else:
@@ -329,7 +333,10 @@ class UnrolledLinkedList(object):
             A string representation of the list."""
 
         string = '{'
-        return self.string_elements_recur(self.head, string)
+        if len(self) == 0:
+            return string + '}'
+        else:
+            return self.string_elements_recur(self.head, string)
 
     def string_elements_recur(self, curr_node, string):
         string += '['
@@ -337,7 +344,7 @@ class UnrolledLinkedList(object):
         while i < len(curr_node.array):
             string += str(curr_node.array[i])
             if i != len(curr_node.array) - 1:
-                string += ','
+                string += ', '
             i += 1
         string += ']'
         if not curr_node.has_next_node():
