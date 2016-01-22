@@ -221,9 +221,12 @@ class UnrolledLinkedList(object):
         # Case where the curr_node is less than half-way full and has a next_node;
         # move items from the next_node to the curr_node until it is above half
         if curr_node.has_next_node():
+            calculated_mnc_half = mnc / 2
+            if mnc % 2 == 1:
+                calculated_mnc_half += 1
 
             # Moving items from the next_node into the curr_node.
-            while len(curr_node) < mnc/2 and len(curr_node.next_node) > 0:
+            while len(curr_node) < calculated_mnc_half and len(curr_node.next_node) > 0:
                 curr_node.array.append(curr_node.next_node.array[0])
                 del curr_node.next_node.array[0]
 

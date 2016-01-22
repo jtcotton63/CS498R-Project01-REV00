@@ -59,7 +59,7 @@ class Test(unittest.TestCase):
         assert error_thrown1 is True
 
         # Test __str__
-        assert str(test_list) == "{[0], [1], [2], [3,4,5]}"
+        assert str(test_list) == "{[0, 1], [2, 3], [4, 5]}"
 
         # Test __set__
         test_list[-6] = 10
@@ -110,30 +110,34 @@ class Test(unittest.TestCase):
 
         # Test delete
         del test_list[0]
-        assert str(test_list) == "{[11], [12], [13,14,15]}"
+        assert str(test_list) == "{[11, 12, 13], [14, 15]}"
         test_list.append(16)
         del test_list[1]
         # Make sure a middle node gets removed correctly
-        assert str(test_list) == "{[11], [13], [14,15,16]}"
+        assert str(test_list) == "{[11, 13], [14, 15, 16]}"
         del test_list[2]
-        assert str(test_list) == "{[11], [13], [15,16]}"
+        assert str(test_list) == "{[11, 13], [15, 16]}"
         test_list.append(17)
         del test_list[4]
-        assert str(test_list) == "{[11], [13], [15,16]}"
+        assert str(test_list) == "{[11, 13], [15, 16]}"
         del test_list[3]
-        assert str(test_list) == "{[11], [13], [15]}"
+        # This is a funny case where the node being deleted from is the
+        # last node. None of the resources that we have been given access
+        # to describing the behavior of ULLs if the current
+        # node is less than half full and there is no next node. All the directions
+        # given are concerned with the case where the current node has a next node
+        # that it can pull additional elements from. Since this case isn't described,
+        # it is assumed that the end node is to be left alone.
+        assert str(test_list) == "{[11, 13], [15]}"
         # Make sure the end node gets deleted
         del test_list[2]
-        assert str(test_list) == "{[11], [13]}"
-
-        # Test for arrays being de-allocated correctly
-        assert len(test_list.head.next_node) == 1
+        assert str(test_list) == "{[11, 13]}"
 
         # Test deleting from end using negative indices
         del test_list[-2]
         assert str(test_list) == "{[13]}"
         del test_list[-1]
-        assert str(test_list) == "{[]}"
+        assert str(test_list) == "{}"
 
         # Test error raising for __del__
         error_thrown1 = False
@@ -177,7 +181,7 @@ class Test(unittest.TestCase):
         two.append(15)
 
         one += two
-        assert str(one) == "{[0,1], [2,3], [4,5], [10,11], [12,13,14,15]}"
+        assert str(one) == "{[0, 1, 2], [3, 4, 5], [10, 11, 12], [13, 14, 15]}"
 
         # Test error raising for __add__
         error_thrown = False
@@ -188,7 +192,7 @@ class Test(unittest.TestCase):
         assert error_thrown is True
 
     def test_smoke_mult(self):
-        one = UnrolledLinkedList(5)
+        one = UnrolledLinkedList(4)
         one.append(0)
         one.append(1)
         one.append(2)
@@ -197,10 +201,10 @@ class Test(unittest.TestCase):
         one.append(5)
 
         one *= 1
-        assert str(one) == "{[0,1], [2,3,4,5]}"
+        assert str(one) == "{[0, 1], [2, 3, 4, 5]}"
 
         one *= 4
-        assert str(one) == "{[0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3], [4,5], [0,1], [2,3,4,5]}"
+        assert str(one) == "{[0, 1], [2, 3], [4, 5], [0, 1], [2, 3], [4, 5], [0, 1], [2, 3], [4, 5], [0, 1], [2, 3, 4, 5]}"
 
         # Test error raising for __mult__
         error_thrown = False
@@ -212,7 +216,7 @@ class Test(unittest.TestCase):
         assert error_thrown is True
 
     def test_smoke_iters(self):
-        test_list = UnrolledLinkedList(16)
+        test_list = UnrolledLinkedList(4)
         for i in xrange(0, 16):
             test_list.append(i)
 
