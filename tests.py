@@ -54,7 +54,8 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             assert test_list[-7]
-        except IndexError:
+        except IndexError as ie:
+            assert str(ie) == "Negative index given is out of array bounds"
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -79,14 +80,16 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             temp = test_list['a']
-        except TypeError:
+        except TypeError as te:
+            assert str(te) == "Indices can only be of type int"
             error_thrown1 = True
         assert error_thrown1 is True
 
         error_thrown1 = False
         try:
             temp = test_list[5000]
-        except IndexError:
+        except IndexError as ie:
+            assert str(ie) == "Given index is out of list bounds"
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -94,14 +97,16 @@ class Test(unittest.TestCase):
         error_thrown1 = False
         try:
             test_list['a'] == 350
-        except TypeError:
+        except TypeError as te:
+            assert str(te) == "Indices can only be of type int"
             error_thrown1 = True
         assert error_thrown1 is True
 
         error_thrown1 = False
         try:
             test_list[5000] = -1
-        except IndexError:
+        except IndexError as ie:
+            assert str(ie) == "Given index is out of list bounds"
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -144,13 +149,15 @@ class Test(unittest.TestCase):
         try:
             del test_list['a']
         except TypeError:
+            assert str(te) == "Indices can only be of type int"
             error_thrown1 = True
         assert error_thrown1 is True
 
         error_thrown1 = False
         try:
-            temp = test_list[5000]
-        except IndexError:
+            del test_list[5000]
+        except IndexError as ie:
+            assert str(ie) == "Given index is out of list bounds"
             error_thrown1 = True
         assert error_thrown1 is True
 
@@ -187,7 +194,8 @@ class Test(unittest.TestCase):
         error_thrown = False
         try:
             one += 'hello'
-        except TypeError:
+        except TypeError as te:
+            assert str(te) == "Other parameter is not of type UnrolledLinkedList"
             error_thrown = True
         assert error_thrown is True
 
@@ -211,7 +219,8 @@ class Test(unittest.TestCase):
         try:
             two = UnrolledLinkedList
             one *= two
-        except TypeError:
+        except TypeError as te:
+            assert str(te) == "Count parameter must be an int"
             error_thrown = True
         assert error_thrown is True
 
@@ -231,6 +240,18 @@ class Test(unittest.TestCase):
         for item in reversed(test_list):
             assert item == counter
             counter -= 1
+
+    def test_ull_two(self):
+        test_list = UnrolledLinkedList(2);
+        test_list.append(0)
+        test_list.append(1)
+        test_list.append(2)
+        test_list.append(3)
+        assert test_list[0] == 0
+        assert test_list[1] == 1
+        assert test_list[2] == 2
+        assert test_list[3] == 3
+        assert str(test_list) == "{[0], [1], [2, 3]}"
 
 if __name__ == '__main__':
     unittest.main()

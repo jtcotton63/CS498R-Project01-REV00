@@ -60,8 +60,8 @@ class UnrolledLinkedList(object):
         last_node = self.find_last_node_recur(self.head)
         if last_node.is_array_full():
             temp = self.Node()
-            if UnrolledLinkedList.max_node_capacity == 1 or UnrolledLinkedList.max_node_capacity == 2:
-                temp.array[0] = data
+            if UnrolledLinkedList.max_node_capacity == 1:
+                temp.array.append(data)
                 # DO NOT NEED TO DELETE FROM OLD ARRAY
             else:
                 middle = int(math.floor(len(last_node)/2))  # When even
@@ -105,6 +105,9 @@ class UnrolledLinkedList(object):
             IndexError: If the index is out of bounds.
 
         """
+        if type(index) is not int:
+            raise TypeError("Indices can only be of type int")
+
         calculated_index = index
         if index < 0:
             calculated_index = self.convert_negative_index_to_positive_index(index)
@@ -140,6 +143,9 @@ class UnrolledLinkedList(object):
             TypeError: If index is not an `int` object.
             IndexError: If the index is out of bounds.
         """
+        if type(index) is not int:
+            raise TypeError("Indices can only be of type int")
+
         calculated_index = index
         if index < 0:
             calculated_index = self.convert_negative_index_to_positive_index(index)
@@ -179,7 +185,7 @@ class UnrolledLinkedList(object):
             TypeError: If index is not an `int` object.
             IndexError: If the index is out of bounds.
         """
-        if not type(index) is int:
+        if type(index) is not int:
             raise TypeError("Indices can only be of type int")
 
         # Find node the item is in and delete it from the node's array
@@ -270,7 +276,7 @@ class UnrolledLinkedList(object):
             return curr_node, index
         elif curr_node.has_next_node():
             return self.get_node_with_data_at_index(curr_node.next_node, index - len(curr_node))
-        raise IndexError('No item in the list has the following index: ' + str(index))
+        raise IndexError("Given index is out of list bounds")
 
     def convert_negative_index_to_positive_index(self, index):
         calculated_index = len(self) + index  # same as len() - abs(index)
